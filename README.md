@@ -1,80 +1,63 @@
 
 
+# Overview
 
+`edge-computing-testbed` is a testbed for task offloading in edge computing. It uses containers to emulate the edge node. It supports schedulers based on deep reinforcement learning.
 
-# 技术
+# Installation
 
-- Java 17
-- Maven 3.6.3
-- DJL 0.21.0
-- Spring Boot 2.7.5
-- Spring Cloud 2021.0.4
-    - Nacos (配置中心，注册中心)
-    - Ribbon、Loadbalancer (RPC)
-- Hadoop 3.3.4
-- MySQL 8.0.31
-- MyBatis-Plus 3.5.2
-- Docker 23.0.3
-- Kubernetes 1.22.12
+## Java
 
+The testbed needs to install Java 17+.
 
+## Kubernetes
 
-# 学习资料
+We recommend installing the K8S via the KubeKey.
 
-- [Docker、Kubernetes](https://www.bilibili.com/video/BV13Q4y1C7hS/?spm_id_from=333.337.search-card.all.click)
-- [SpringCloud](https://www.bilibili.com/video/BV18E411x7eT/?spm_id_from=333.337.search-card.all.click)
-- [SpringBoot](https://www.bilibili.com/video/BV19K4y1L7MT/?spm_id_from=333.337.search-card.all.click&vd_source=2aad8136eecb2edf8db4cde67f60d208)
-- [Hadoop的HDFS](https://www.bilibili.com/video/BV1Qp4y1n7EN/?spm_id_from=333.337.search-card.all.click&vd_source=2aad8136eecb2edf8db4cde67f60d208)
-- [MyBatis](https://www.bilibili.com/video/BV1VP4y1c7j7/?spm_id_from=333.337.search-card.all.click&vd_source=2aad8136eecb2edf8db4cde67f60d208)
-- [MyBatis-Plus](https://www.bilibili.com/video/BV12R4y157Be/?spm_id_from=333.337.search-card.all.click&vd_source=2aad8136eecb2edf8db4cde67f60d208)
-- [DJL](https://d2l-zh.djl.ai/)
+https://www.kubesphere.io/docs/v3.3/quick-start/all-in-one-on-linux/
 
-# 快速开始
+It also will install docker.
 
-## 安装Java 17
+## Docker Image
 
-## 安装mysql 8.0
+build the docker image based on `docker/build-image.md` for components in the testbed. The components include `edge-node`, `edge-controller` and `edge-exeperiment`.
 
-基于Kubernetes安装可以参考`edge-computing-v3/k8s/mysql.yaml`，使用`kubectl apply -f mysql.yaml` 安装。
+## MySQL
 
-执行`sql/create_table.sql`，创建库和表
+Execute `kubectl apply -f k8s/mysql.yaml` to install MySQL.
 
-## 安装nacos 2.x
+Execute `sql/create_table.sql` to create database and tables in MySQL.
 
-基于Kubernetes安装可以参考`edge-computing-v3/k8s/nacos.yaml`，使用`kubectl apply -f nacos.yaml` 安装。
-安装参考官方文档：
+## Nacos
 
-https://nacos.io/zh-cn/docs/v2/quickstart/quick-start.html
+Execute `kubectl apply -f k8s/nacos.yaml` to install Nacos.
 
-添加`nacos/DEFAULT_GROUP`中所有配置
+Add all the configurations in `nacos/`.
 
-## 安装hadoop 3.3.4
+## Hadoop
 
-安装单节点伪分布式，参考官方文档：
+Install Hadoop 3.3.4 using Pseudo-Distributed Installation via the official document.
 
-https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html
+https://hadoop.apache.org/
 
-## 安装Docker、K8S【可选】
+we also provide the installation document in `hadoop/hadoop-installation.md`.
 
-## 启动Java微服务
+# Architecture
 
-Main函数运行
+The testbed consists of three layers and middleware. These three layers include the DRL layer, control layer, and execution layer. The middleware includes Service Registry, Services Configuration, Database, and Distributed File System(DFS).
 
-设置不同sever port（7001、7002）和application name ，通过修改启动时参数，如`--server.port=7001 --spring.application.name=edge-node-1`
+![image-20230517163523585](https://lhc-note.oss-cn-guangzhou.aliyuncs.com/images/image-20230517163523585.png)
 
-启动最少的2个`edge-node` 进行测试。修改边缘节点个数，需要在nacos中修改`edgeComputing.edgeNodeNumber`参数，
+# Usage
 
-启动`edge-controller`
+Start experiment:
 
-启动`edge-experiment` 跑实验。
+```shell
+ start-experiment.sh
+```
 
-默认的任务卸载算法为Random。
+Stop experiment:
 
-![image-20230219150130262](https://lhc-note.oss-cn-guangzhou.aliyuncs.com/images/image-20230219150130262.png)
-
-若安装Docker和K8S，可以使用shell脚本运行。
-
-运行`start-experiment.sh`启动实验。
-
-运行`stop-experiment.sh`关闭实验。
-
+```shell
+ stop-experiment.sh
+```

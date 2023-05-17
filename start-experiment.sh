@@ -26,5 +26,4 @@ done
 kubectl apply -f edge-controller.yaml
 
 ## edge-experiment
-# todo: debug in local computer, NodePort for edge-node and controller
 kubectl apply -f edge-experiment.yaml

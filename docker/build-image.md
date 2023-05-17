@@ -8,18 +8,13 @@ https://hub.docker.com/_/ubuntu/tags?page=1&name=22
 docker pull ubuntu:22.04
 ```
 
-
-
 ```sh
 docker run --name ubuntu22 -itd ubuntu:22.04 /bin/bash
 ```
 
-
-
 ```sh
 docker exec -it ubuntu22 /bin/bash
 ```
-
 
 
 ```sh
@@ -28,7 +23,7 @@ mkdir lhc-dev
 ```
 
 
-
+copy local jdk to the container.
 ```sh
 docker cp jdk-17.0.5 ubuntu22:/root/lhc-dev
 ```

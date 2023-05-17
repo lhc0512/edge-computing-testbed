@@ -1,16 +1,8 @@
-
-
-
-
-
-
-参考官方文档
+This document refers to the official documentation:
 
 https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html
 
 # Prerequisites
-
-## Linux
 
 ## Java
 
@@ -41,23 +33,17 @@ sudo yum install ssh sshd pdsh
 
 
 
-ssh 免密登录自己
+ssh localhost without password.
 
 ```shell
 ssh localhost
 ```
 
-# Download
-
-mirror
-
-https://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/core/hadoop-3.3.4/
-
 # Pseudo-Distributed Installation
 
 ## Hadoop configuration
 
-编辑 `.bash_profile`
+edit `.bash_profile`
 
 ```shell
 export HADOOP_HOME=/home/hongcai/lhc-dev/hadoop-3.3.4
@@ -66,7 +52,7 @@ export PATH=$PATH:$HADOOP_HOME/sbin
 source ~/.bash_profile
 ```
 
-编辑 `/home/hongcai/lhc_dev/hadoop-3.3.4/etc/hadoop/hadoop-env.sh`
+edit `/home/hongcai/lhc_dev/hadoop-3.3.4/etc/hadoop/hadoop-env.sh`
 
 ```shell
 export JAVA_HOME=/home/hongcai/lhc-dev/jdk1.8.0_202
@@ -75,8 +61,6 @@ export JAVA_HOME=/home/hongcai/lhc-dev/jdk1.8.0_202
 ## HDFS configuration
 
 `core-site.xml`
-
-注意为host，se-lab-3990x。
 
 ```xml
 <configuration>
@@ -97,26 +81,26 @@ export JAVA_HOME=/home/hongcai/lhc-dev/jdk1.8.0_202
 
 ```xml
 <configuration>
-  <property>
-    <name>dfs.replication</name>
-    <value>1</value>
-  </property>
-  
-  <!--name format 存储位置 -->
-  <property>
-    <name>dfs.namenode.name.dir</name>
-    <value>/home/hongcai/lhc-dev/hadoop-3.3.4/dfs/name</value>
-  </property>
-  
-  <property>
-    <name>dfs.datanode.data.dir</name>
-    <value>/home/hongcai/lhc-dev/hadoop-3.3.4/dfs/data</value>
-  </property>
- 
-  <property>
-    <name>dfs.permissions</name>
-    <value>false</value>
-  </property>
+    <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+    </property>
+
+    <!--name format  -->
+    <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>/home/hongcai/lhc-dev/hadoop-3.3.4/dfs/name</value>
+    </property>
+
+    <property>
+        <name>dfs.datanode.data.dir</name>
+        <value>/home/hongcai/lhc-dev/hadoop-3.3.4/dfs/data</value>
+    </property>
+
+    <property>
+        <name>dfs.permissions</name>
+        <value>false</value>
+    </property>
 </configuration>
 ```
 
@@ -202,4 +186,3 @@ jps
 Web UI
 
 http://se-lab-3990x:8088/cluster
-
