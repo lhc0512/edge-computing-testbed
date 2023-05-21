@@ -27,5 +27,11 @@ public class TestDJL {
     }
 
 
+    @Test
+    public void testGamma(){
+        log.info("{}", Math.pow(0.99, 10));
+        log.info("{}", Math.pow(0.95, 10));
+    }
+
 
 }

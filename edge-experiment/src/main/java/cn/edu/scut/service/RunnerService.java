@@ -139,6 +139,7 @@ public class RunnerService implements InitializingBean {
                 availActions[i - 1][j - 1] = availAction;
 
                 var reward = transitionService.getReward(j, i);
+                // 不符合MDP
                 if (useRewardInTime) {
                     teamRewards[i - 1] += reward;
                 } else {

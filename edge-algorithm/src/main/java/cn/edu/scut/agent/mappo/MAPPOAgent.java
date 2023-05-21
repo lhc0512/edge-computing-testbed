@@ -90,7 +90,6 @@ public class MAPPOAgent extends MultiAgentAdaptor implements InitializingBean {
     @Value("${rl.batch-size}")
     private int batchSize;
 
-
     @Autowired
     private Model actorModel;
 

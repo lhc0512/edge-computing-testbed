@@ -94,6 +94,9 @@ public class TransitionService implements InitializingBean {
     @Value("${env.max-task-reliability}")
     private float maxTaskReliability;
 
+    @Value("${rl.local-reward}")
+    private float localReward;
+
     @Autowired
     private EnvUtils envUtils;
 
@@ -223,7 +226,7 @@ public class TransitionService implements InitializingBean {
             if (addLocalReward) {
                 // 鼓励本地计算
                 if (task.getSource().equals(task.getDestination())) {
-                    reward += 0.2f;
+                    reward += localReward;
                 }
             }
         }

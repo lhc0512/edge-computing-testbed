@@ -2,12 +2,13 @@ spring:
     application:
         name: edge-controller
     profiles:
-#        active: edge-computing,mappo
+        active: edge-computing,mappo
 #        active: edge-computing,masac
 #        active: edge-computing,reliability-two-choice
 #        active: edge-computing,reactive
 #        active: edge-computing,random
-        active: edge-computing,esf
+#        active: edge-computing,esf
+#        active: edge-computing,two-choice
 #        active: edge-computing,local
     cloud:
         nacos:

@@ -26,6 +26,8 @@ public class ExecutionRunnable implements Runnable {
     @Value("${env.use-constant-reliability}")
     private boolean useConstantReliability;
 
+    @Value("${env.use-task-reliability}")
+    private boolean useTaskReliability;
     @Getter
     private Task task;
 
@@ -62,15 +64,20 @@ public class ExecutionRunnable implements Runnable {
         task.setEndExecutionTime(LocalDateTime.now());
         // reliability
         var isFailure = false;
-
         if (usePoissonReliability) {
             double reliability = Math.exp(-task.getExecutionTime() / 1000.0 * edgeNodeSystem.getEdgeNode().getExecutionFailureRate());
             if (reliabilityRandom.nextDouble() > reliability) {
                 isFailure = true;
             }
         } else if (useConstantReliability) {
-            if (reliabilityRandom.nextDouble() > edgeNodeSystem.getEdgeNode().getEdgeNodeReliability()) {
-                isFailure = true;
+            if (useTaskReliability) {
+                if (reliabilityRandom.nextDouble() > edgeNodeSystem.getEdgeNode().getEdgeNodeReliability() * task.getTaskReliability()) {
+                    isFailure = true;
+                }
+            } else {
+                if (reliabilityRandom.nextDouble() > edgeNodeSystem.getEdgeNode().getEdgeNodeReliability()) {
+                    isFailure = true;
+                }
             }
         }
 

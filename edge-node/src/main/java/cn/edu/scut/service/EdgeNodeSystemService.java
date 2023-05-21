@@ -69,6 +69,9 @@ public class EdgeNodeSystemService implements InitializingBean {
     private ESFScheduler esfScheduler;
 
     @Autowired
+    private TwoChoiceScheduler twoChoiceScheduler;
+
+    @Autowired
     private EdgeNodeService edgeNodeService;
 
     @Autowired
@@ -91,6 +94,7 @@ public class EdgeNodeSystemService implements InitializingBean {
             case "reactive" -> reactiveScheduler.selectAction(task);
             case "reliability-two-choice" -> reliabilityTwoChoice.selectAction(task);
             case "esf" -> esfScheduler.selectAction(task);
+            case "two-choice" -> twoChoiceScheduler.selectAction(task);
             default -> throw new RuntimeException("no scheduler");
         };
         for (int i = 0; i < actions.length; i++) {

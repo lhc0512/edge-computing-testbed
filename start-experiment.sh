@@ -18,7 +18,7 @@ docker build -t edge-experiment:v1.0 .
 # kubernetes
 ## edge-node
 cd ../k8s/edge || exit
-for i in $(seq 1 3); do
+for i in $(seq 1 10); do
   export spring_application_name=edge-node-$i
   envsubst <edge-node.yaml | kubectl apply -f -
 done

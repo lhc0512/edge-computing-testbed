@@ -5,6 +5,7 @@ import cn.edu.scut.bean.Link;
 import cn.edu.scut.bean.Task;
 import cn.edu.scut.service.EdgeNodeService;
 import cn.edu.scut.service.LinkService;
+import cn.edu.scut.util.EnvUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Random;
 
 @Lazy
@@ -42,6 +44,9 @@ public class RandomScheduler implements IScheduler {
     @Autowired
     private LinkService linkService;
 
+    @Autowired
+    private EnvUtils envUtils;
+
     @Override
     public int[] selectAction(Task task) {
         if (useRedundancy) {
@@ -61,7 +66,8 @@ public class RandomScheduler implements IScheduler {
     }
 
     private int[] selectMultiAction(Task task) {
-        var res = new ArrayList<Integer>();
+//        var res = new ArrayList<Integer>();
+        var res = new HashSet<Integer>();
         var list = new ArrayList<Integer>();
         for (int i = 1; i <= edgeNodeNumber; i++) {
             list.add(i);
@@ -70,18 +76,7 @@ public class RandomScheduler implements IScheduler {
         for (int i = 0; i < maxTaskRedundancy; i++) {
             Integer a = list.get(i);
             res.add(a);
-            var unReliability = 1.0f;
-            for (Integer s : res) {
-                var taskReliability = task.getTaskReliability();
-                var linkReliability = linkService.getOne(new QueryWrapper<Link>().eq("source", task.getSource()).eq("destination", s)).getLinkReliability();
-                var edgeNodeReliability = edgeNodeService.getOne(new QueryWrapper<EdgeNode>().eq("edge_node_id", s)).getEdgeNodeReliability();
-                if (useTaskReliability) {
-                    unReliability *= 1 - taskReliability * linkReliability * edgeNodeReliability;
-                } else {
-                    unReliability *= 1 - linkReliability * edgeNodeReliability;
-                }
-            }
-            if ((1 - unReliability) >= task.getReliabilityRequirement()) {
+            if (envUtils.isMeetReliabilityRequirement(res, task)) {
                 break;
             }
         }

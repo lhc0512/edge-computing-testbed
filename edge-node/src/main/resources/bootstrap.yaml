@@ -4,10 +4,11 @@ spring:
     profiles:
 #         active: edge-computing,reactive
 #         active: edge-computing,reliability-two-choice
-#         active: edge-computing,mappo
+         active: edge-computing,mappo
 #         active: edge-computing,masac
 #        active: edge-computing,random
-        active: edge-computing,esf
+#        active: edge-computing,esf
+#        active: edge-computing,two-choice
     cloud:
         nacos:
             discovery:

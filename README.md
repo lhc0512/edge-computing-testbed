@@ -20,7 +20,7 @@ It also will install docker.
 
 ## Docker Image
 
-build the docker image based on `docker/build-image.md` for components in the testbed. The components include `edge-node`, `edge-controller` and `edge-exeperiment`.
+build the docker image based on `docker/build-image.md` for components in the testbed. The components include `edge-node`, `edge-controller` and `edge-experiment`.
 
 ## MySQL
 
@@ -50,6 +50,11 @@ The testbed consists of three layers and middleware. These three layers include 
 
 # Usage
 
+## Local Mode
+
+
+## Server Mode
+
 Start experiment:
 
 ```shell
@@ -61,3 +66,4 @@ Stop experiment:
 ```shell
  stop-experiment.sh
 ```
+

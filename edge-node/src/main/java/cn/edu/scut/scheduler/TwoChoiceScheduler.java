@@ -9,20 +9,23 @@ import cn.edu.scut.util.EnvUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashSet;
+import java.util.*;
 
+@Slf4j
+@Lazy
 @Component
-public class ESFScheduler implements IScheduler, InitializingBean {
-
+/**
+ * DR-DRL
+ */
+public class TwoChoiceScheduler implements IScheduler, InitializingBean {
     @Value("${env.use-redundancy}")
     private boolean useRedundancy;
 
@@ -36,6 +39,7 @@ public class ESFScheduler implements IScheduler, InitializingBean {
     private int edgeNodeNumber;
 
     private int offloadingShape;
+
     @Autowired
     private EdgeNodeService edgeNodeService;
 
@@ -44,6 +48,9 @@ public class ESFScheduler implements IScheduler, InitializingBean {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private Random schedulerRandom;
 
     @Autowired
     private EnvUtils envUtils;
@@ -56,35 +63,39 @@ public class ESFScheduler implements IScheduler, InitializingBean {
     @Override
     public int[] selectAction(Task task) {
         var actions = new int[maxTaskRedundancy];
-        //  no offloading
         Arrays.fill(actions, offloadingShape);
-        if (task == null) {
-            return actions;
-        }
-        var entities = new ArrayList<Entity>();
+
+        var candidateEdgeNode = new ArrayList<Integer>();
         for (int i = 1; i <= edgeNodeNumber; i++) {
-            var time1 = restTemplate.getForObject("http://edge-node-" + i + "/edgeNode/waitingTime", Integer.class);
-            entities.add(new Entity(time1, i));
+            candidateEdgeNode.add(i);
         }
-        // 按照最早执行时间从小到大
-        entities.sort(Comparator.comparing(e -> e.time));
         var set = new HashSet<Integer>();
         for (int i = 0; i < maxTaskRedundancy; i++) {
-            int selectId = entities.get(i).edgeNodeId;
-            actions[i] = selectId;
-            set.add(selectId);
+            var priority = new ArrayList<Entity>();
+            for (int j = 0; j < 2; j++) {
+                var a1 = schedulerRandom.nextInt(candidateEdgeNode.size());
+                var a = candidateEdgeNode.remove(a1);
+                var time = restTemplate.getForObject("http://edge-node-" + a + "/edgeNode/waitingTime", Integer.class);
+                priority.add(new Entity(time, a));
+            }
+            priority.sort(Comparator.comparing(e -> e.time));
+
+            actions[i] = priority.get(0).edgeNodeId;
+            set.add(priority.get(0).edgeNodeId);
+            candidateEdgeNode.add(priority.get(1).edgeNodeId);
 
             if (envUtils.isMeetReliabilityRequirement(set, task)) {
                 break;
             }
         }
+        log.info("actions :{}", actions);
         return actions;
     }
 
     @Data
     @AllArgsConstructor
     public static class Entity {
-        private int time;
-        private int edgeNodeId;
+        public int time;
+        public int edgeNodeId;
     }
 }
